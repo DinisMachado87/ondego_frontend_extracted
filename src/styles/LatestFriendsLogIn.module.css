@@ -1,0 +1,5 @@
+.GreenYellow {
+  color: rgb(6, 80, 6);
+  text-shadow: yellow 0.3rem 0.3rem 1rem, yellow -0.3rem -0.3rem 1rem;
+  padding-left: 1rem;
+}

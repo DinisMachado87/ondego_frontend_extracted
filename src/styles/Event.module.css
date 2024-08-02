@@ -1,0 +1,116 @@
+
+.TextShadow * {
+  text-shadow:
+  0.6rem -0.6rem 0.5rem darkgreen,
+  0.4rem -0.4rem 0.5rem darkgreen,
+  0.2rem -0.2rem 0.5rem darkgreen,
+  -0.2rem 0.2rem 0.5rem darkgreen,
+  -0.4rem 0.4rem 0.5rem darkgreen,
+  -0.6rem 0.6rem 0.5rem darkgreen,
+  -0.6rem -0.6rem 0.5rem darkgreen,
+  -0.4rem -0.4rem 0.5rem darkgreen,
+  -0.2rem -0.2rem 0.5rem darkgreen,
+  0.2rem 0.2rem 0.5rem darkgreen,
+  0.4rem 0.4rem 0.5rem darkgreen,
+  0.6rem 0.6rem 0.5rem darkgreen;
+  color: orangered;
+  font-family: "Mukta", sans-serif;
+}
+
+.StretchedImage {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 0.0rem solid transparent;
+  box-shadow: 0 0 0.5rem 0.5rem green;
+  border-radius: 1rem;
+}
+
+.ProportionalImage {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 0 solid transparent;
+  box-shadow: 0 0 0.5rem 0.5rem green;
+  height: 100%;
+  width: auto;
+  max-width: 80%;
+}
+
+.Container {
+  margin: 1rem;
+}
+
+.Card.Text {
+  
+  letter-spacing: 0.2em;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.Front ,
+.Container p,
+.Container h1,
+.Container h2,
+.Container h3,
+.Container h4,
+.Container h5 {
+    position: relative;
+    z-index: 30;
+}
+
+
+.EventFooter i ,
+.EventFooter p {
+  color: green;
+  text-shadow: 0.2rem 0.2rem 0.3rem orangered,
+    0.1rem 0.1rem 0.1rem orangered,
+    -0.2rem -0.2rem 0.3rem orangered,
+    -0.1rem -0.1rem 0.1rem orangered ;
+  transition: text-shadow ease-in-out 0.3s;
+  position: relative;
+  z-index: 30;
+}
+
+.EventFooter i:hover,
+.EventFooter .Active {
+  color: orangered;
+  text-shadow: 0.1rem 0.1rem 0.1rem green;
+  transition: text-shadow ease-in-out 0.3s;
+}
+
+.JoinShadow i:active,
+.JoinShadow p:active {
+  color: orangered;
+  text-shadow: 0.1rem 0.1rem 0.1rem blue;
+  transition: text-shadow ease-in-out 0.3s;
+}
+
+.EventFooter i {
+  font-size: 1.5rem;
+}
+
+.EventFooter p {
+  font-size: 1rem;
+  font-family: "Mukta", sans-serif;
+  font-weight: 900;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+}
+
+.YMargin {
+  margin: 1rem 1rem 5rem 1rem;
+}
+
+.flexStart {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.choiceButton {
+  white-space: nowrap;
+}
