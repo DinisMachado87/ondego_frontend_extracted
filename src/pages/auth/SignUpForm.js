@@ -58,12 +58,13 @@ const SignUpForm = () => {
             </p>
             <h1 className={styles.Header}>Sign up</h1>
             <Form onSubmit={handleSubmit}>
-              <Form.Group controlId='username'>
-                <Form.Label className='d-none'>Username </Form.Label>
+              <Form.Group
+                controlId='username'
+                className='d-flex flex-column align-items-center'>
+                <Form.Label className='text-warning'>Username </Form.Label>
                 <Form.Control
                   className={styles.Input}
                   type='text'
-                  placeholder='Username'
                   name='username'
                   value={username}
                   onChange={handleChange}
@@ -76,12 +77,13 @@ const SignUpForm = () => {
                   {message}
                 </Alert>
               ))}
-              <Form.Group controlId='password1'>
-                <Form.Label className='d-none'>Password</Form.Label>
+              <Form.Group
+                controlId='password1'
+                className='d-flex flex-column align-items-center'>
+                <Form.Label className='text-warning'>Password</Form.Label>
                 <Form.Control
                   className={styles.Input}
                   type='password'
-                  placeholder='Password'
                   name='password1'
                   value={password1}
                   onChange={handleChange}
@@ -94,12 +96,15 @@ const SignUpForm = () => {
                   {message}
                 </Alert>
               ))}
-              <Form.Group controlId='password2'>
-                <Form.Label className='d-none'>Confirm Password</Form.Label>
+              <Form.Group
+                controlId='password2'
+                className='d-flex flex-column align-items-center'>
+                <Form.Label className='text-warning'>
+                  Confirm Password
+                </Form.Label>
                 <Form.Control
                   className={styles.Input}
                   type='password'
-                  placeholder='Confirm Password'
                   name='password2'
                   value={password2}
                   onChange={handleChange}

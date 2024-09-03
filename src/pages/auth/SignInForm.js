@@ -58,13 +58,20 @@ function SignInForm() {
               öndëgö (pronounced "on the go" but cosy) is your helper for
               spontaneous meets with your friends.
             </p>
+            <p className='text-warning text-center pt-3'>
+              To test the app log in with:
+              <br />
+              Username: Test // Password: 12345Test
+            </p>
             <h1 className={styles.Header}>Sign in</h1>
             <Form onSubmit={handleSubmit}>
-              <Form.Group controlId='username'>
-                <Form.Label className='d-none'>Username</Form.Label>
+              <Form.Group
+                controlId='username'
+                className='d-flex flex-column align-items-center'>
+                <Form.Label className='text-warning'>Username</Form.Label>
                 <Form.Control
                   type='text'
-                  placeholder='Username'
+                  placeholder='Test'
                   name='username'
                   className={styles.Input}
                   value={username}
@@ -79,11 +86,13 @@ function SignInForm() {
                 </Alert>
               ))}
 
-              <Form.Group controlId='password'>
-                <Form.Label className='d-none'>Password</Form.Label>
+              <Form.Group
+                controlId='password'
+                className='d-flex flex-column align-items-center'>
+                <Form.Label className='text-warning'>Password</Form.Label>
                 <Form.Control
                   type='password'
-                  placeholder='Password'
+                  placeholder='12345Test'
                   name='password'
                   className={styles.Input}
                   value={password}
@@ -127,7 +136,7 @@ function SignInForm() {
             <Image
               className={`px-3`}
               src={
-                "https://res.cloudinary.com/drgepxrpe/image/upload/v1712698055/ondego_event_placeholder/ppumyfwefatzziuko1ru"
+                'https://res.cloudinary.com/drgepxrpe/image/upload/v1712698055/ondego_event_placeholder/ppumyfwefatzziuko1ru'
               }
               width='100%'
               rounded
