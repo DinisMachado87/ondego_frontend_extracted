@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 // React
-import { axiosReq, axiosRes } from "../../api/axiosDefaults";
+import { axiosReq, axiosRes } from '../../api/axiosDefaults';
 // Axios
-import { Card, Col, Media, Row } from "react-bootstrap";
-import styles from "../../styles/Event.module.css";
-import appStyles from "../../App.module.css";
+import { Card, Col, Media, Row } from 'react-bootstrap';
+import styles from '../../styles/Event.module.css';
+import appStyles from '../../App.module.css';
 // styles
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import Avatar from "../../components/Avatar";
-import EventPage from "./EventPage";
-import { MoreDropdown } from "../../components/MoreDropdown";
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
+import Avatar from '../../components/Avatar';
+import EventPage from './EventPage';
+import { MoreDropdown } from '../../components/MoreDropdown';
 // Components
 
 const Event = (props) => {
@@ -52,14 +52,14 @@ const Event = (props) => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this event?")) {
+    if (window.confirm('Are you sure you want to delete this event?')) {
       try {
         await axiosReq.delete(`/events/${id}/`);
         setEvents((prevEvents) => ({
           ...prevEvents,
           results: prevEvents.results.filter((event) => event.id !== id),
         }));
-        history.push("/");
+        history.push('/');
       } catch (err) {
         console.log(err);
       }
@@ -73,7 +73,7 @@ const Event = (props) => {
   const handleJoiningChoice = async (choice) => {
     try {
       const currentUserJoiningThisEvent = (
-        await axiosRes.get("/joinings/")
+        await axiosRes.get('/joinings/')
       ).data.results
         .filter((joining) => joining.event === id)
         .find((joining) => joining.owner === currentUser.username);
@@ -93,7 +93,7 @@ const Event = (props) => {
         } // update the state accordingly
       } else {
         // if the user has not a joining instance yet, create a new one with POST
-        await axiosReq.post("/joinings/", {
+        await axiosReq.post('/joinings/', {
           event: id,
           owner: currentUser.username,
           status: choice,
@@ -107,9 +107,9 @@ const Event = (props) => {
   };
 
   const choiceToCountMap = {
-    1: "not_joining_count",
-    2: "joining_count",
-    3: "let_me_see_count",
+    1: 'not_joining_count',
+    2: 'joining_count',
+    3: 'let_me_see_count',
   };
 
   /** Update the joining choice counts in the event object
@@ -140,18 +140,20 @@ const Event = (props) => {
   };
 
   const ChoiceButton = ({ choice, count, handleJoiningChoice }) => (
-    <span onClick={() => handleJoiningChoice(choice)} className="IMobileBlock">
+    <span
+      onClick={() => handleJoiningChoice(choice)}
+      className='IMobileBlock'>
       <i
         className={
           `fa fa-solid ${
-            choice === "1"
-              ? "fa-heart-circle-bolt"
-              : choice === "2"
-              ? "fa-rocket"
-              : "fa-dice"
-          } ` + (currentPreviousUserChoice === choice ? styles.Active : "")
+            choice === '1'
+              ? 'fa-heart-circle-bolt'
+              : choice === '2'
+              ? 'fa-rocket'
+              : 'fa-dice'
+          } ` + (currentPreviousUserChoice === choice ? styles.Active : '')
         }></i>
-      <p style={{ margin: 0, display: "inline-block" }}>{count}</p>
+      <p style={{ margin: 0, display: 'inline-block' }}>{count}</p>
     </span>
   );
 
@@ -173,24 +175,33 @@ const Event = (props) => {
               />
               <div
                 style={{
-                  position: "relative",
+                  position: 'relative',
                   zIndex: 30,
-                  padding: "1.5rem 1rem",
-                  fontSize: "1.3rem",
+                  padding: '1.5rem 1rem',
+                  fontSize: '1.3rem',
                 }}>
                 {owner}
               </div>
             </div>
-            <h2>{what_title && <div className='fw-bold'>{what_title}</div>}</h2>
+            <h2>
+              {what_title && (
+                <div className={`${styles.Title}`}>{what_title}</div>
+              )}
+            </h2>
             <h4>{intention && <span>{intention}</span>}</h4>
             <p>{what_content && <span>{what_content}</span>}</p>
-            <p>{where_place && <span>{where_place}</span>}</p>
-            <p>{where_address && <span>{where_address}</span>}</p>
-            <p>{when_start && <span>start: {when_start}</span>}</p>
-            <p>{when_end && <span>end: {when_end}</span>}</p>
-            <div className={styles.Front}>created: {created_at}</div>
-            <div className={styles.Front}>updated: {updated_at}</div>
-
+            <br />
+            <p>
+              {where_place && <span>{ where_place }</span> }
+              <br />
+              {where_address && <span>{where_address}</span>}
+            </p>
+            <br />
+            <p>
+              {when_start && <span>start: {when_start}</span>}
+              <br />
+              {when_end && <span>end: {when_end}</span>}
+            </p>
             <div className={`${styles.flexEnd}`}>
               <img
                 alt='event'

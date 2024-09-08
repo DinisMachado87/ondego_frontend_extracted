@@ -33,12 +33,19 @@
 
 .Container {
   margin: 1rem;
+  padding-left: 0.5rem;
 }
 
-.Card.Text {
+.Card p {
   letter-spacing: 0.2em;
   border-radius: 1rem;
-  padding: 1rem;
+}
+
+.Title {
+  color: rgba(255, 255, 0, 0.906);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 1.9rem;
 }
 
 .Front,
@@ -104,6 +111,12 @@
   white-space: nowrap;
 }
 
+.CreatedAt {
+  font-size: 0.8rem;
+  text-align: right;
+  padding-right: 0.5rem;
+}
+
 /* mobile devices */
 
 @media (max-width: 768px) {
@@ -116,6 +129,7 @@
 
 .Container {
   margin: 0rem;
+  padding-left: 0rem;
 }
 
 .EventFooter {

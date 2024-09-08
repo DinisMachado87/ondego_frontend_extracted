@@ -11,14 +11,14 @@
 .App h4,
 .App h5,
 .App h6 {
-  font-family: "Mukta", sans-serif;
+  font-family: 'Mukta', sans-serif;
   font-weight: bold;
 }
 
 .App p,
 .App input,
 .App textarea {
-  font-family: "Padauk", sans-serif;
+  font-family: 'Padauk', sans-serif;
 }
 
 .Main {
@@ -111,4 +111,11 @@ figure {
 
 .YMargin {
   margin: 5rem 5rem;
+}
+
+/* mobile */
+@media (max-width: 600px) {
+  .Main {
+    padding-top: 6rem;
+  }
 }
