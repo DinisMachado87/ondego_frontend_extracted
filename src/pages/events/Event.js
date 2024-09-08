@@ -140,7 +140,7 @@ const Event = (props) => {
   };
 
   const ChoiceButton = ({ choice, count, handleJoiningChoice }) => (
-    <span onClick={() => handleJoiningChoice(choice)}>
+    <span onClick={() => handleJoiningChoice(choice)} className="IMobileBlock">
       <i
         className={
           `fa fa-solid ${
@@ -150,7 +150,7 @@ const Event = (props) => {
               ? "fa-rocket"
               : "fa-dice"
           } ` + (currentPreviousUserChoice === choice ? styles.Active : "")
-        }></i>{" "}
+        }></i>
       <p style={{ margin: 0, display: "inline-block" }}>{count}</p>
     </span>
   );
@@ -219,7 +219,6 @@ const Event = (props) => {
                 />
               </Col>
               <Col className={`${styles.choiceButton}`}>
-                {" "}
                 <ChoiceButton
                   className={styles.choiceButton}
                   choice='3'
