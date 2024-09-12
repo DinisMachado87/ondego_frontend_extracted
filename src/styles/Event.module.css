@@ -125,25 +125,25 @@
     top: 2rem;
     max-width: 77%;
   }
-}
-
-.Container {
-  margin: 0rem;
-  padding-left: 0rem;
-}
-
-.EventFooter {
-  padding-bottom: 0.5rem;
-}
-
-.EventFooter i {
-  font-size: 1.3rem;
-}
-
-.EventFooter p {
-  font-size: 0.8rem;
-}
-
-.choiceButton {
-  white-space: normal;
+  
+  .Container {
+    margin: 0rem;
+    padding-left: 0rem;
+  }
+  
+  .EventFooter {
+    padding-bottom: 0.5rem;
+  }
+  
+  .EventFooter i {
+    font-size: 1.3rem;
+  }
+  
+  .EventFooter p {
+    font-size: 0.8rem;
+  }
+  
+  .choiceButton {
+    white-space: normal;
+  }
 }

@@ -50,3 +50,10 @@
 }
 
 
+/* mobile devices */
+
+@media (max-width: 768px) {
+  .FixedSearchContainer {
+  top: 6.5rem;
+}
+}

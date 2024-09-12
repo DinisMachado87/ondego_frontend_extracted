@@ -1,15 +1,15 @@
-import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
-import logo from "../assets/ondego.svg";
-import styles from "../styles/NavBar.module.css";
-import { NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { Navbar, Nav, Dropdown } from 'react-bootstrap';
+import logo from '../assets/ondego.svg';
+import styles from '../styles/NavBar.module.css';
+import { NavLink } from 'react-router-dom';
 import {
   useCurrentUser,
   useSetCurrentUser,
-} from "../contexts/CurrentUserContext";
-import Avatar from "./Avatar";
-import axios from "axios";
-import useClickOutsideToggle from "../hooks/useClickOutsideToggle";
+} from '../contexts/CurrentUserContext';
+import Avatar from './Avatar';
+import axios from 'axios';
+import useClickOutsideToggle from '../hooks/useClickOutsideToggle';
 
 const NavBar = () => {
   const currentUser = useCurrentUser();
@@ -17,14 +17,86 @@ const NavBar = () => {
 
   const { expanded, setExpanded, ref } = useClickOutsideToggle();
 
+  const [selectedChoice, setSelectedChoice] = useState({
+    icon: 'fa-solid fa-satellite',
+    description: 'all evënts',
+    to: '/',
+  });
+
+  const handleSelect = (choice) => {
+    setSelectedChoice(choice);
+  };
+
+  const choices = [
+    {
+      icon: 'fa-solid fa-satellite',
+      description: 'all evënts',
+      to: '/',
+    },
+    {
+      icon: 'fa-solid fa-fire',
+      description: 'evënts göing on',
+      to: '/goingon',
+    },
+    {
+      icon: 'fa-solid fa-rocket',
+      description: "evënts I'm jöining",
+      to: '/joining',
+    },
+  ];
+
   const handleSignOut = async () => {
     try {
-      await axios.post("/dj-rest-auth/logout/");
+      await axios.post('/dj-rest-auth/logout/');
       setCurrentUser(null);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const dropdownEvents = (
+    <Dropdown className={styles.Dropdown}>
+      <Dropdown.Toggle
+        variant='success'
+        id='dropdown-basic'
+        className={styles.DropdownToggle}>
+        <i className={selectedChoice.icon}></i> {selectedChoice.description}
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu className={styles.DropdownMenu}>
+        {choices.map((choice, index) => (
+          <Dropdown.Item
+            as='div'
+            key={index}
+            onClick={() => handleSelect(choice)}
+            className={styles.DropdownItem}>
+            <NavLink
+              exact
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to={choice.to}>
+              <i className={choice.icon}></i> {choice.description}
+            </NavLink>
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+
+  const EventIconsList = (
+    <>
+      {choices.map((choice, index) => (
+        <NavLink
+          key={index}
+          exact
+          className={styles.NavLink}
+          activeClassName={styles.Active}
+          to={choice.to}>
+          <i className={choice.icon}></i> {choice.description}
+        </NavLink>
+      ))}
+    </>
+  );
 
   const loggedInIcons = (
     <>
@@ -34,30 +106,12 @@ const NavBar = () => {
         to='/event/create'>
         <i className='fa-solid fa-wand-magic-sparkles'></i>add evënt
       </NavLink>
-      <NavLink
-        exact
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to='/'>
-        <i className='fa-solid fa-satellite'></i>all evënts
-      </NavLink>
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to='/goingon'>
-        <i className='fa-solid fa-fire'></i> evënts göing on
-      </NavLink>
-      <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
-        to='/joining'>
-        <i className='fa-solid fa-rocket'></i>evënts I'm jöining
-      </NavLink>
+      {window.innerWidth > 750 ? dropdownEvents : EventIconsList}
       <NavLink
         className={styles.NavLink}
         to='/'
         onClick={handleSignOut}>
-        <i className='fa-solid fa-lightbulb'></i>Sign out
+        <i className='fa-solid fa-lightbulb'></i> Sign out
       </NavLink>
       <NavLink
         className={styles.NavLink}
@@ -117,7 +171,7 @@ const NavBar = () => {
         ref={ref}
         onClick={() => setExpanded(!expanded)}
         aria-controls='basic-navbar-nav'
-        style={{ borderRadius: "1rem", borderColor: "darkviolet" }}
+        style={{ borderRadius: '1rem', borderColor: 'darkviolet' }}
       />
       <Navbar.Collapse id='basic-navbar-nav'>
         <Nav className={`ml-auto ${expanded ? styles.expanded : ''}`}>

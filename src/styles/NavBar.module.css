@@ -10,8 +10,11 @@
   box-shadow: 0 0 0.5rem 0.5rem darkviolet;
 }
 
+.DropdownToggle,
+.DropdownItem,
+.DropdownToogle.NavLink,
 .NavLink {
-  color: darkviolet;
+  color: darkviolet !important;
   font-size: 1rem;
   font-weight: bold;
   text-shadow: 0.05rem 0.05rem 0 blue;
@@ -24,11 +27,54 @@
   white-space: pre-wrap;
 }
 
+.DropdownItem:hover,
+.DropdownToogle:hover,
 .NavLink:hover {
   cursor: pointer;
   text-decoration: none;
   text-shadow: 1rem 0.5rem 1rem;
   transition: text-shadow ease-in-out 0.3s;
+  background-color: transparent !important;
+  color: darkviolet !important;
+}
+
+.Active {
+  text-shadow: blue 1rem 0.5rem 1rem;
+}
+
+.expanded .NavLink .Dropdown {
+  flex-direction: row;
+}
+
+/* Override Bootstrap Dropdown Styles */
+
+.DropdownToggle {
+  background-color: transparent; /* Ensure dropdown toggle is transparent */
+  border: none; /* Remove border */
+}
+
+.DropdownToggle:hover,
+.DropdownToggle:active,
+.DropdownToggle:focus {
+  background-color: transparent !important; /* Ensure background remains transparent on hover and active */
+}
+
+.DropdownMenu {
+  background-color: black; /* Ensure dropdown menu is transparent */
+  border: 0.3rem solid transparent;
+  box-shadow: 0 0 0.5rem 0.5rem darkviolet;
+  border-radius: 2rem;
+}
+
+.DropdownItem:hover,
+.DropdownItem:active,
+.DropdownItem:focus {
+  background-color: transparent; /* Ensure background remains transparent on hover and active */
+}
+
+.DropdownItem {
+  background-color: transparent; /* Ensure dropdown items are transparent */
+  border: none; /* Remove border */
 }
 
 .Active {
@@ -36,5 +82,6 @@
 }
 
 .expanded .NavLink {
-  flex-direction: row; 
+  flex-direction: row;
 }
+
