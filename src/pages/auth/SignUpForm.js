@@ -109,11 +109,10 @@ const SignUpForm = () => {
                   value={password2}
                   onChange={handleChange}
                 />
-              </Form.Group>
               {error.password2?.map((message, index) => (
                 <Alert
-                  variant='warning'
-                  key={index}>
+                variant='warning'
+                key={index}>
                   {message}
                 </Alert>
               ))}
@@ -124,12 +123,13 @@ const SignUpForm = () => {
               </Button>
               {error.non_field_errors?.map((message, index) => (
                 <Alert
-                  variant='warning'
-                  className='mt-3'
-                  key={index}>
+                variant='warning'
+                className='mt-3'
+                key={index}>
                   {message}
                 </Alert>
               ))}
+              </Form.Group>
             </Form>
           </Container>
           <Container className={`mt-3 ${appStyles.Content}`}>

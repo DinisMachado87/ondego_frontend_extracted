@@ -98,11 +98,10 @@ function SignInForm() {
                   value={password}
                   onChange={handleChange}
                 />
-              </Form.Group>
               {errors.password?.map((message, idx) => (
                 <Alert
-                  key={idx}
-                  variant='warning'>
+                key={idx}
+                variant='warning'>
                   {message}
                 </Alert>
               ))}
@@ -113,12 +112,13 @@ function SignInForm() {
               </Button>
               {errors.non_field_errors?.map((message, idx) => (
                 <Alert
-                  key={idx}
-                  variant='warning'
-                  className='pt-3'>
+                key={idx}
+                variant='warning'
+                className='pt-3'>
                   {message}
                 </Alert>
               ))}
+              </Form.Group>
             </Form>
           </Container>
           <Container className={`pt-3 ${appStyles.Content}`}>
