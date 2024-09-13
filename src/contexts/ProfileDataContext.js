@@ -1,7 +1,7 @@
-import React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
-import { axiosReq, axiosRes } from "../api/axiosDefaults";
-import { useCurrentUser } from "./CurrentUserContext";
+import React from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { axiosReq, axiosRes } from '../api/axiosDefaults';
+import { useCurrentUser } from './CurrentUserContext';
 
 export const ProfileDataContext = createContext();
 export const SetProfileDataContext = createContext();
@@ -236,14 +236,20 @@ export const ProfileDataProvider = ({ children }) => {
        * This async function fetches the latest friends log in data
        * then sets the profile data
        */
+      if (!currentUser) {
+        return;
+      }
       try {
-        const { data } = await axiosReq.get("/profiles/?ordering=-last_login");
+        const { data } = await axiosReq.get('/profiles/?ordering=-last_login');
         setProfileData((prevState) => ({
           ...prevState,
           latestFriendsLogIn: data,
         }));
       } catch (err) {
-        console.log(err);
+        console.error(
+          'Error fetching latest friends log in data:',
+          err.message
+        );
       }
     };
 
