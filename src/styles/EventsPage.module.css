@@ -25,7 +25,8 @@
 }
 
 .FixedSearchContainer {
-  margin-left: 20vw;
+  left: 40% ;
+  margin-right: 10px;
   position: fixed;
   z-index: 2000;
   top: 11rem;

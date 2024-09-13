@@ -42,25 +42,21 @@
   text-shadow: blue 1rem 0.5rem 1rem;
 }
 
-.expanded .NavLink .Dropdown {
-  flex-direction: row;
-}
-
 /* Override Bootstrap Dropdown Styles */
 
 .DropdownToggle {
-  background-color: transparent; /* Ensure dropdown toggle is transparent */
-  border: none; /* Remove border */
+  background-color: transparent;
+  border: none;
 }
 
 .DropdownToggle:hover,
 .DropdownToggle:active,
 .DropdownToggle:focus {
-  background-color: transparent !important; /* Ensure background remains transparent on hover and active */
+  background-color: transparent !important;
 }
 
 .DropdownMenu {
-  background-color: black; /* Ensure dropdown menu is transparent */
+  background-color: black;
   border: 0.3rem solid transparent;
   box-shadow: 0 0 0.5rem 0.5rem darkviolet;
   border-radius: 2rem;
@@ -69,12 +65,12 @@
 .DropdownItem:hover,
 .DropdownItem:active,
 .DropdownItem:focus {
-  background-color: transparent; /* Ensure background remains transparent on hover and active */
+  background-color: transparent;
 }
 
 .DropdownItem {
-  background-color: transparent; /* Ensure dropdown items are transparent */
-  border: none; /* Remove border */
+  background-color: transparent;
+  border: none;
 }
 
 .Active {
@@ -84,4 +80,3 @@
 .expanded .NavLink {
   flex-direction: row;
 }
-
