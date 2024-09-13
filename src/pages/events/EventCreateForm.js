@@ -52,8 +52,6 @@ function EventCreateForm() {
     what_content,
     where_place,
     where_address,
-    when_start,
-    when_end,
     intention,
     event_image,
     link,

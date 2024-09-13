@@ -20,8 +20,6 @@ const Event = (props) => {
   const {
     id,
     owner,
-    created_at,
-    updated_at,
     what_title,
     what_content,
     where_place,
