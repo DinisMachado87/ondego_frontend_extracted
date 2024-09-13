@@ -33,6 +33,14 @@
   box-shadow: 0 0 0.5rem 0.5rem white;
 }
 
+.FullWidth {
+  width: 100%;
+}
+
+.HalfWidth {
+  width: calc(50% - 2rem);
+}
+
 .Green,
 .Green:hover,
 .Green:active,
@@ -42,14 +50,6 @@
   color: black;
   border: 0.3rem solid transparent;
   box-shadow: 0 0 0.5rem 0rem rgb(0, 255, 0);
-}
-
-.FullWidth {
-  width: 100%;
-}
-
-.HalfWidth {
-  width: calc(50% - 2rem);
 }
 
 .Orange,
@@ -62,4 +62,15 @@
   border: 0.3rem solid transparent;
   box-shadow: 0 0 0.5rem 0rem yellow;
   margin: 0.5rem;
+}
+
+.Grey,
+.Grey:hover,
+.Grey:active,
+.Grey:focus {
+  background: grey;
+  border: 1px solid grey;
+  color: rgb(33, 33, 33);
+  border: 0.3rem solid transparent;
+  box-shadow: 0 0 0.5rem 0rem rgb(179, 179, 179);
 }

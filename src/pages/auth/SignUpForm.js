@@ -61,9 +61,10 @@ const SignUpForm = () => {
               <Form.Group
                 controlId='username'
                 className='d-flex flex-column align-items-center'>
-                <Form.Label className='text-warning'>Username </Form.Label>
+                <Form.Label className='sr-only'>Username </Form.Label>
                 <Form.Control
-                  className={styles.Input}
+                  className={ styles.Input }
+                  placeholder="Username"
                   type='text'
                   name='username'
                   value={username}
@@ -80,9 +81,10 @@ const SignUpForm = () => {
               <Form.Group
                 controlId='password1'
                 className='d-flex flex-column align-items-center'>
-                <Form.Label className='text-warning'>Password</Form.Label>
+                <Form.Label className='sr-only'>Password</Form.Label>
                 <Form.Control
-                  className={styles.Input}
+                  className={ styles.Input }
+                  placeholder='Password'
                   type='password'
                   name='password1'
                   value={password1}
@@ -99,11 +101,12 @@ const SignUpForm = () => {
               <Form.Group
                 controlId='password2'
                 className='d-flex flex-column align-items-center'>
-                <Form.Label className='text-warning'>
+                <Form.Label className='sr-only'>
                   Confirm Password
                 </Form.Label>
                 <Form.Control
-                  className={styles.Input}
+                  className={ styles.Input }
+                  placeholder='Confirm Password'
                   type='password'
                   name='password2'
                   value={password2}
