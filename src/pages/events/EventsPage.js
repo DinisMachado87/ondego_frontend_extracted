@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
-import Event from "./Event";
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
+import Event from './Event';
 
-import styles from "../../styles/EventsPage.module.css";
-import { useLocation } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
-import NoResults from "../../assets/no-results.png";
-import Asset from "../../components/Asset";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchMoreData } from "../../utils/utils";
-import LatestFriendsLogIn from "../profiles/LatestFriendsLogIn";
-import { useRedirect } from "../../hooks/useRedirect";
+import styles from '../../styles/EventsPage.module.css';
+import { useLocation } from 'react-router-dom';
+import { axiosReq } from '../../api/axiosDefaults';
+import NoResults from '../../assets/no-results.png';
+import Asset from '../../components/Asset';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { fetchMoreData } from '../../utils/utils';
+import LatestFriendsLogIn from '../profiles/LatestFriendsLogIn';
+import { useRedirect } from '../../hooks/useRedirect';
+import SearchBar from '../../components/SearchBar';
 
-function EventsPage({ message, filter = "" }) {
-  useRedirect("loggedOut");
+function EventsPage({ message, filter = '' }) {
+  useRedirect('loggedOut');
 
   const [events, setEvents] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -51,29 +52,16 @@ function EventsPage({ message, filter = "" }) {
       <Row className='h-100'>
         <Col
           className='py-2 p-0 p-lg-2'
-          style={{ position: "relative" }}
+          style={{ position: 'relative' }}
           lg={8}>
           <div>
-            <div className={`${styles.FixedSearchContainer} mt-lg-0 mt-md-5`}>
-              {" "}
-              <i className={`fas fa-search ${styles.SearchIcon}`}></i>
-              <Form
-                className={styles.SearchBar}
-                onSubmit={(e) => e.preventDefault()}>
-                <Form.Control
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  type='text'
-                  className='mr-sm-2'
-                  placeholder='Search events by user/title...'
-                />
-              </Form>
-            </div>
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+            />
           </div>
           {hasLoaded ? (
-            <div
-              className={`px-3`}
-            >
+            <div className={`px-3`}>
               {events.results.length ? (
                 <InfiniteScroll
                   children={events.results.map((event) => (
