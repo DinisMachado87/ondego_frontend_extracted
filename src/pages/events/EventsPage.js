@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
@@ -15,15 +14,14 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { fetchMoreData } from '../../utils/utils';
 import LatestFriendsLogIn from '../profiles/LatestFriendsLogIn';
 import { useRedirect } from '../../hooks/useRedirect';
-import SearchBar from '../../components/SearchBar';
 
-function EventsPage({ message, filter = '' }) {
+
+function EventsPage({ message, filter = '', query }) {
   useRedirect('loggedOut');
 
   const [events, setEvents] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();
-  const [query, setQuery] = useState('');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -54,12 +52,6 @@ function EventsPage({ message, filter = '' }) {
           className='py-2 p-0 p-lg-2'
           style={{ position: 'relative' }}
           lg={8}>
-          <div>
-            <SearchBar
-              query={query}
-              setQuery={setQuery}
-            />
-          </div>
           {hasLoaded ? (
             <div className={`px-3`}>
               {events.results.length ? (

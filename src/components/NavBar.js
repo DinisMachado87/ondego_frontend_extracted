@@ -10,8 +10,16 @@ import {
 import Avatar from './Avatar';
 import axios from 'axios';
 import useClickOutsideToggle from '../hooks/useClickOutsideToggle';
+import SearchBar from './SearchBar';
 
-const NavBar = () => {
+const NavBar = ({ setQuery }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setQuery(query);
+  };
+
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
 
@@ -150,41 +158,50 @@ const NavBar = () => {
   );
 
   return (
-    <Navbar
-      expanded={expanded}
-      className={`${styles.NavBar} navbar-dark px-3`}
-      text='darkviolet'
-      border='blue'
-      expand='md'
-      fixed='top'>
-      <NavLink to='/'>
-        <Navbar.Brand>
-          <img
-            src={logo}
-            alt='logo'
-            height='45'
-            className='p-2'
-          />
-        </Navbar.Brand>
-      </NavLink>
-      <Navbar.Toggle
-        ref={ref}
-        onClick={() => setExpanded(!expanded)}
-        aria-controls='basic-navbar-nav'
-        style={{ borderRadius: '1rem', borderColor: 'darkviolet' }}
-      />
-      <Navbar.Collapse id='basic-navbar-nav'>
-        <Nav className={`ml-auto ${expanded ? styles.expanded : ''}`}>
-          {currentUser ? loggedInIcons : loggedOutIcons}
-          <NavLink
-            className={styles.NavLink}
-            activeClassName={styles.Active}
-            to='/instructions'>
-            <i className='fa-solid fa-book'></i>Instructions
-          </NavLink>
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+    <>
+      <Navbar
+        expanded={expanded}
+        className={`${styles.NavBar} navbar-dark px-3`}
+        text='darkviolet'
+        border='blue'
+        expand='md'
+        fixed='top'>
+        <NavLink to='/'>
+          <Navbar.Brand>
+            <img
+              src={logo}
+              alt='logo'
+              height='45'
+              className='p-2'
+            />
+          </Navbar.Brand>
+        </NavLink>
+        <Navbar.Toggle
+          ref={ref}
+          onClick={() => setExpanded(!expanded)}
+          aria-controls='basic-navbar-nav'
+          style={{ borderRadius: '1rem', borderColor: 'darkviolet' }}
+        />
+        <Navbar.Collapse id='basic-navbar-nav'>
+          <Nav className={`ml-auto ${expanded ? styles.expanded : ''}`}>
+            {currentUser ? loggedInIcons : loggedOutIcons}
+            <NavLink
+              className={styles.NavLink}
+              activeClassName={styles.Active}
+              to='/instructions'>
+              <i className='fa-solid fa-book'></i>Instructions
+            </NavLink>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <div>
+        <SearchBar
+          query={searchQuery}
+          setQuery={setSearchQuery}
+          onSearch={handleSearch}
+        />
+      </div>
+    </>
   );
 };
 

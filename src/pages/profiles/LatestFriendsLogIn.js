@@ -7,20 +7,28 @@ import { useProfileData } from "../../contexts/ProfileDataContext";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import styles from "../../styles/LatestFriendsLogIn.module.css";
 
-const LatestFriendsLogIn = ({ mobile }) => {
+const LatestFriendsLogIn = ({ mobile, query }) => {
   const currentUser = useCurrentUser();
   const { latestFriendsLogIn } = useProfileData();
 
   const profiles = useMemo(() => {
     if (latestFriendsLogIn.results) {
-      return currentUser
+      let filteredProfiles = currentUser
         ? latestFriendsLogIn.results.filter(
             (profile) => profile.id !== currentUser.pk
           )
         : latestFriendsLogIn.results;
+
+      if (query) {
+        filteredProfiles = filteredProfiles.filter((profile) =>
+          profile.username.toLowerCase().includes(query.toLowerCase())
+        );
+      }
+
+      return filteredProfiles;
     }
     return [];
-  }, [latestFriendsLogIn.results, currentUser]);
+  }, [latestFriendsLogIn.results, currentUser, query]); 
 
   const hasLoaded = useMemo(
     () => !!latestFriendsLogIn.results,

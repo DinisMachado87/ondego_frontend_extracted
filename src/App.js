@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./App.module.css";
 import NavBar from "./components/NavBar";
 import Container from "react-bootstrap/Container";
@@ -23,10 +23,11 @@ import Instructions from "./pages/intructions/Instructions";
 function App() {
   const currentUser = useCurrentUser();
   const profile_id = currentUser?.profile_id || "";
+  const [query, setQuery] = useState("");
 
   return (
     <div className={styles.App}>
-      <NavBar />
+      <NavBar setQuery={setQuery}/>
       <Container className={styles.Main}>
         <Switch>
           <Route
@@ -34,7 +35,7 @@ function App() {
             path='/'
             render={() =>
               currentUser ? (
-                <EventsPage message="sorry, couldn't find anything göing ön here. Maybe you can can start an ëvent..? or maybe a book in the sofa?" />
+                <EventsPage query={query} message="sorry, couldn't find anything göing ön here. Maybe you can can start an ëvent..? or maybe a book in the sofa?" />
               ) : (
                 <Redirect to='/signin' />
               )
