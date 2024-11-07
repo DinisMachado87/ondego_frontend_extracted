@@ -15,6 +15,7 @@ export const ProfileDataProvider = ({ children }) => {
     latestFriendsLogIn: { results: [] },
   });
   const currentUser = useCurrentUser();
+  const [query, setQuery] = useState('');
 
   const handleUnfriend = async (clickedProfile) => {
     try {
@@ -240,7 +241,9 @@ export const ProfileDataProvider = ({ children }) => {
         return;
       }
       try {
-        const { data } = await axiosReq.get('/profiles/?ordering=-last_login');
+        const { data } = await axiosReq.get(
+          `/profiles/?search=${query}&ordering=-last_login`
+        );
         setProfileData((prevState) => ({
           ...prevState,
           latestFriendsLogIn: data,
@@ -254,13 +257,14 @@ export const ProfileDataProvider = ({ children }) => {
     };
 
     handleMount();
-  }, [currentUser]);
+  }, [currentUser, query]);
 
   return (
-    <ProfileDataContext.Provider value={profileData}>
+    <ProfileDataContext.Provider value={ { profileData, query } }>
       <SetProfileDataContext.Provider
         value={{
           setProfileData,
+          setQuery,
           handleCancelFriendRequest,
           handleConsentFriendRequest,
           handleCreateFriendRequest,

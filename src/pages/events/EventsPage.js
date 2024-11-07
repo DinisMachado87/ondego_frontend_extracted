@@ -14,11 +14,12 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { fetchMoreData } from '../../utils/utils';
 import LatestFriendsLogIn from '../profiles/LatestFriendsLogIn';
 import { useRedirect } from '../../hooks/useRedirect';
+import { useProfileData } from '../../contexts/ProfileDataContext';
 
-
-function EventsPage({ message, filter = '', query }) {
+function EventsPage({ message, filter = '' }) {
   useRedirect('loggedOut');
 
+  const { query } = useProfileData();
   const [events, setEvents] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation();

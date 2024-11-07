@@ -1,47 +1,39 @@
-import React, { useMemo } from "react";
-import { Container } from "react-bootstrap";
-import appStyles from "../../App.module.css";
-import Asset from "../../components/Asset";
-import Profile from "./Profiles";
-import { useProfileData } from "../../contexts/ProfileDataContext";
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import styles from "../../styles/LatestFriendsLogIn.module.css";
+import React, { useMemo } from 'react';
+import { Container } from 'react-bootstrap';
+import appStyles from '../../App.module.css';
+import Asset from '../../components/Asset';
+import Profile from './Profiles';
+import { useProfileData } from '../../contexts/ProfileDataContext';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
+import styles from '../../styles/LatestFriendsLogIn.module.css';
 
-const LatestFriendsLogIn = ({ mobile, query }) => {
+const LatestFriendsLogIn = ({ mobile }) => {
   const currentUser = useCurrentUser();
-  const { latestFriendsLogIn } = useProfileData();
+  const { profileData } = useProfileData();
 
   const profiles = useMemo(() => {
-    if (latestFriendsLogIn.results) {
-      let filteredProfiles = currentUser
-        ? latestFriendsLogIn.results.filter(
+    if (profileData.latestFriendsLogIn?.results) {
+      return currentUser
+        ? profileData.latestFriendsLogIn.results.filter(
             (profile) => profile.id !== currentUser.pk
           )
-        : latestFriendsLogIn.results;
-
-      if (query) {
-        filteredProfiles = filteredProfiles.filter((profile) =>
-          profile.username.toLowerCase().includes(query.toLowerCase())
-        );
-      }
-
-      return filteredProfiles;
+        : profileData.latestFriendsLogIn.results;
     }
     return [];
-  }, [latestFriendsLogIn.results, currentUser, query]); 
+  }, [profileData.latestFriendsLogIn?.results, currentUser]);
 
   const hasLoaded = useMemo(
-    () => !!latestFriendsLogIn.results,
-    [latestFriendsLogIn.results]
+    () => !!profileData.latestFriendsLogIn?.results,
+    [profileData.latestFriendsLogIn?.results]
   );
 
   const currentUserProfile = useMemo(() => {
-    return currentUser && latestFriendsLogIn.results
-      ? latestFriendsLogIn.results.filter(
+    return currentUser && profileData.latestFriendsLogIn?.results
+      ? profileData.latestFriendsLogIn.results.filter(
           (profile) => profile.id === currentUser.pk
         )
       : [];
-  }, [latestFriendsLogIn.results, currentUser]);
+  }, [profileData.latestFriendsLogIn?.results, currentUser]);
 
   const currentUserProfileDeskTop = profiles.length
     ? currentUserProfile.map((currentUser) => (
@@ -71,7 +63,7 @@ const LatestFriendsLogIn = ({ mobile, query }) => {
   return mobile ? null : (
     <Container
       className={`${appStyles.Content} pt-5 ${
-        mobile && "d-lg-none text-right mb-3"
+        mobile && 'd-lg-none text-right mb-3'
       }`}>
       {!hasLoaded ? (
         <Asset spinner />

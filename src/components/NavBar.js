@@ -12,19 +12,10 @@ import axios from 'axios';
 import useClickOutsideToggle from '../hooks/useClickOutsideToggle';
 import SearchBar from './SearchBar';
 
-const NavBar = ({ setQuery }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setQuery(query);
-  };
-
+const NavBar = () => {
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
-
   const { expanded, setExpanded, ref } = useClickOutsideToggle();
-
   const [selectedChoice, setSelectedChoice] = useState({
     icon: 'fa-solid fa-satellite',
     description: 'all evënts',
@@ -195,11 +186,7 @@ const NavBar = ({ setQuery }) => {
         </Navbar.Collapse>
       </Navbar>
       <div>
-        <SearchBar
-          query={searchQuery}
-          setQuery={setSearchQuery}
-          onSearch={handleSearch}
-        />
+        <SearchBar />
       </div>
     </>
   );
