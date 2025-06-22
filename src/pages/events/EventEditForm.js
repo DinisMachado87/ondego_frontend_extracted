@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Resizer from 'react-image-file-resizer';
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -82,6 +83,7 @@ function EventEditForm() {
           link,
         } = data;
         if (is_owner) {
+          console.log('User is owner, setting form data');
           setEventData({
             what_title: what_title || "",
             what_content: what_content || "",
@@ -96,10 +98,12 @@ function EventEditForm() {
           setStartInputValue(formatDate(when_start));
           setEndInputValue(formatDate(when_end));
         } else {
+          console.log('User is NOT owner, redirecting to event page');
           history.push(`/events/${id}`);
         }
       } catch (err) {
         console.error(err);
+        console.error('Error response:', err.response);
       }
     };
 
@@ -125,6 +129,21 @@ function EventEditForm() {
       }));
     }
   };
+
+const resizeImage = (file, callback) => {
+  Resizer.imageFileResizer(
+    file,
+    1920, // Max width
+    1080, // Max height
+    'JPEG', // Format
+    85, // Quality
+    0, // Rotation
+    (resizedImage) => {
+      callback(resizedImage);
+    },
+    'file'
+  );
+};
 
   const handleChangeImage = (event) => {
     // if there is a file, set the image to the file
@@ -152,7 +171,7 @@ function EventEditForm() {
     ) {
       setErrors({
         non_field_errors: [
-          "Title, Description, Place, and Start Date are required",
+          'Title, Description, Place, and Start Date are required',
         ],
       });
       return;
@@ -163,19 +182,32 @@ function EventEditForm() {
       updatedEndDate = calculateNewEndDate(startInputValue);
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("what_title", what_title);
-      formData.append("what_content", what_content);
-      formData.append("where_place", where_place);
-      formData.append("where_address", where_address);
-      formData.append("when_start", startInputValue);
-      formData.append("when_end", updatedEndDate);
-      formData.append("intention", intention);
-      formData.append("link", link);
-      if (imageInput.current.files[0]) {
-        formData.append("event_image", imageInput.current.files[0]);
-      }
+    const formData = new FormData();
+    formData.append('what_title', what_title);
+    formData.append('what_content', what_content);
+    formData.append('where_place', where_place);
+    formData.append('where_address', where_address);
+    formData.append('when_start', startInputValue);
+    formData.append('when_end', updatedEndDate);
+    formData.append('intention', intention);
+    formData.append('link', link);
+
+    // Handle image upload with resizing
+    if (imageInput.current.files[0]) {
+      resizeImage(imageInput.current.files[0], async (resizedImage) => {
+        formData.append('event_image', resizedImage);
+        try {
+          await axiosReq.put(`/events/${id}/`, formData);
+          history.push(`/events/${id}/`);
+        } catch (err) {
+          console.error(err);
+          if (err.response?.status !== 401) {
+            setErrors(err.response?.data);
+          }
+        }
+      });
+    } else {
+      // No image selected, submit without image
       try {
         await axiosReq.put(`/events/${id}/`, formData);
         history.push(`/events/${id}/`);
@@ -185,8 +217,6 @@ function EventEditForm() {
           setErrors(err.response?.data);
         }
       }
-    } catch (err) {
-      console.error(err);
     }
   };
 
