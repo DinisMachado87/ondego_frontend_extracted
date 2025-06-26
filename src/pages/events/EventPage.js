@@ -29,19 +29,23 @@ function EventPage() {
 
   useEffect(() => {
     const handleMount = async () => {
-      try {
+    console.log('EventPage: ID from params:', id);
+    console.log('EventPage: About to fetch:', `/events/${id}`);      try {
         const [{ data: event }, { data: comments }] = await Promise.all([
           axiosReq.get(`/events/${id}`),
           axiosReq.get(`/comments/?event=${id}`),
         ]);
+        console.log('EventPage: Fetched event data:', event);
+        console.log('EventPage: Fetched comments data:', comments);
         setEvent({ results: [event] });
         setComments(comments);
         setHasLoaded(true);
       } catch (err) {
-        console.log(err);
-      }
+      console.log('EventPage: Full error object:', err);
+      console.log('EventPage: Error response:', err.response?.data);
+      console.log('EventPage: Error status:', err.response?.status);
+      console.log('EventPage: Request URL was:', err.config?.url);      }
     };
-
     handleMount();
   }, [id]);
 
@@ -49,12 +53,21 @@ function EventPage() {
     <Row>
       <Col className='py-2 p-0 p-lg-2'>
         <Container>
-          {hasLoaded && event.results.length ? (
-            <Event
-              {...event.results[0]}
-              eventPage
-              setEvents={setEvent}
-            />
+          {console.log(
+            'EventPage: hasLoaded =',
+            hasLoaded,
+            'event.results =',
+            event.results
+          )}
+          { hasLoaded && event.results.length ? (
+            <>
+              {console.log('EventPage: Rendering Event component with data:', event.results[0])}
+              <Event
+                {...event.results[0]}
+                eventPage
+                setEvents={setEvent}
+              />
+            </>
           ) : (
             <Asset spinner />
           )}
