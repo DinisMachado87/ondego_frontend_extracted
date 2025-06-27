@@ -29,8 +29,12 @@ function EventPage() {
 
   useEffect(() => {
     const handleMount = async () => {
-    console.log('EventPage: ID from params:', id);
-    console.log('EventPage: About to fetch:', `/events/${id}`);      try {
+      console.log('EventPage: ID from params:', id);
+      console.log('EventPage: Current user:', currentUser);
+      console.log("Auth cookie:", document.cookie);
+      console.log("LocalStorage:", localStorage);
+      console.log('EventPage: About to fetch:', `/events/${id}`);
+      try {
         const [{ data: event }, { data: comments }] = await Promise.all([
           axiosReq.get(`/events/${id}`),
           axiosReq.get(`/comments/?event=${id}`),
@@ -47,7 +51,7 @@ function EventPage() {
       console.log('EventPage: Request URL was:', err.config?.url);      }
     };
     handleMount();
-  }, [id]);
+  }, [id, currentUser]);
 
   return (
     <Row>
