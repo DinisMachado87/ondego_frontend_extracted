@@ -9,7 +9,6 @@ import appStyles from '../../App.module.css';
 // styles
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import Avatar from '../../components/Avatar';
-import EventPage from './EventPage';
 import { MoreDropdown } from '../../components/MoreDropdown';
 // Components
 
@@ -212,7 +211,7 @@ const Event = (props) => {
         <Card.Footer>
           <div className={styles.EventFooter}>
             <Row className={`${styles.EventFooter} `}>
-              {is_owner && EventPage && (
+              {is_owner && (
                 <Col className='col-1'>
                   <MoreDropdown
                     handleEdit={handleEdit}
