@@ -1,25 +1,27 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react';
 
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Image from "react-bootstrap/Image";
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
 
-import Upload from "../../assets/upload.jpg";
+import Upload from '../../assets/upload.jpg';
 
-import styles from "../../styles/EventCreateEditForm.module.css";
-import appStyles from "../../App.module.css";
-import btnStyles from "../../styles/Button.module.css";
-import Asset from "../../components/Asset";
-import { Alert } from "react-bootstrap";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import axios from "axios";
-import { useRedirect } from "../../hooks/useRedirect";
+import styles from '../../styles/EventCreateEditForm.module.css';
+import appStyles from '../../App.module.css';
+import btnStyles from '../../styles/Button.module.css';
+import Asset from '../../components/Asset';
+import { Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useRedirect } from '../../hooks/useRedirect';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 
 function EventCreateForm() {
-  useRedirect("loggedOut");
+  useRedirect('loggedOut');
 
   const getTodayAt = (hours, minutes) => {
     let date = new Date();
@@ -33,15 +35,15 @@ function EventCreateForm() {
   const [errors, setErrors] = useState({});
 
   const [eventData, setEventData] = useState({
-    what_title: "",
-    what_content: "",
-    where_place: "",
-    where_address: "",
+    what_title: '',
+    what_content: '',
+    where_place: '',
+    where_address: '',
     when_start: getTodayAt(18, 0),
     when_end: getTodayAt(23, 0),
-    intention: "",
+    intention: '',
     event_image: Upload,
-    link: "",
+    link: '',
   });
 
   const [startInputValue, setStartInputValue] = useState(getTodayAt(18, 0));
@@ -58,7 +60,8 @@ function EventCreateForm() {
   } = eventData;
 
   const imageInput = useRef(null);
-  const history = useHistory();
+  const navigate = useNavigate();
+  const currentUser = useCurrentUser();
 
   const calculateNewEndDate = (startDate) => {
     const start = new Date(startDate);
@@ -68,9 +71,9 @@ function EventCreateForm() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "when_start") {
+    if (name === 'when_start') {
       setStartInputValue(value);
-    } else if (name === "when_end") {
+    } else if (name === 'when_end') {
       setEndInputValue(value);
     } else {
       setEventData((prevData) => ({
@@ -105,7 +108,7 @@ function EventCreateForm() {
     ) {
       setErrors({
         non_field_errors: [
-          "Title, Description, Place and Start Date are required",
+          'Title, Description, Place and Start Date are required',
         ],
       });
       return;
@@ -118,26 +121,26 @@ function EventCreateForm() {
 
     try {
       const formData = new FormData();
-      formData.append("what_title", what_title);
-      formData.append("what_content", what_content);
-      formData.append("where_place", where_place);
-      formData.append("where_address", where_address);
-      formData.append("when_start", startInputValue);
-      formData.append("when_end", updatedEndDate);
-      formData.append("intention", intention);
-      formData.append("link", link);
+      formData.append('what_title', what_title);
+      formData.append('what_content', what_content);
+      formData.append('where_place', where_place);
+      formData.append('where_address', where_address);
+      formData.append('when_start', startInputValue);
+      formData.append('when_end', updatedEndDate);
+      formData.append('intention', intention);
+      formData.append('link', link);
       if (imageInput.current.files[0]) {
-        formData.append("event_image", imageInput.current.files[0]);
+        formData.append('event_image', imageInput.current.files[0]);
       } else {
         const response = await fetch(Upload);
         const blob = await response.blob();
-        const file = new File([blob], "upload.jpg", { type: "image/jpeg" });
-        formData.append("event_image", file);
+        const file = new File([blob], 'upload.jpg', { type: 'image/jpeg' });
+        formData.append('event_image', file);
       }
 
       try {
-        const { data } = await axios.post("/events/", formData);
-        history.push(`/events/${data.id}`);
+        const { data } = await axiosReq.post('/events/', formData);
+        navigate(`/events/${data.id}`);
       } catch (err) {
         console.error(err);
         if (err.response?.status !== 401) {
@@ -318,7 +321,7 @@ function EventCreateForm() {
 
       <Button
         className={`${btnStyles.Button} ${btnStyles.Orange}`}
-        onClick={() => history.goBack()}>
+        onClick={() => navigate(-1)}>
         cancel
       </Button>
       <Button
@@ -373,7 +376,7 @@ function EventCreateForm() {
               <Form.Label
                 className={`${btnStyles.Button} ${btnStyles.Orange}`}
                 htmlFor='image-upload'>
-                {event_image ? "Change the image" : "Click to add an image"}
+                {event_image ? 'Change the image' : 'Click to add an image'}
                 <i className='fa-solid fa-cloud-arrow-up'></i>
                 <Form.File
                   id='image-upload'

@@ -1,100 +1,141 @@
-import React, { useEffect, useState } from "react";
-
-import Alert from "react-bootstrap/Alert";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-
-import { useHistory, useParams } from "react-router-dom";
-import { axiosRes } from "../../api/axiosDefaults";
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Container,
+  Alert,
+  Image,
+} from 'react-bootstrap';
+import Asset from '../../components/Asset';
+import { axiosReq } from '../../api/axiosDefaults';
+import styles from '../../styles/ProfileEditForm.module.css';
+import appStyles from '../../App.module.css';
+import btnStyles from '../../styles/Button.module.css';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   useCurrentUser,
   useSetCurrentUser,
-} from "../../contexts/CurrentUserContext";
+} from '../../contexts/CurrentUserContext';
 
-import btnStyles from "../../styles/Button.module.css";
-import appStyles from "../../App.module.css";
-import styles from "../../styles/SignInUpForm.module.css";
-
-const UsernameForm = () => {
-  const [username, setUsername] = useState("");
+function UsernameForm() {
   const [errors, setErrors] = useState({});
+  const [usernameData, setUsernameData] = useState({
+    username: '',
+  });
+  const { username } = usernameData;
 
-  const history = useHistory();
+  const imageInput = useRef();
+  const navigate = useNavigate();
   const { id } = useParams();
-
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
 
   useEffect(() => {
-    if (currentUser?.profile_id?.toString() === id) {
-      setUsername(currentUser.username);
-    } else {
-      history.push("/");
-    }
-  }, [currentUser, history, id]);
+    const handleMount = async () => {
+      if (currentUser?.profile_id?.toString() === id) {
+        try {
+          const { data } = await axiosReq.get(`/profiles/${id}/`);
+          const { username } = data;
+          setUsernameData({ username });
+        } catch (err) {
+          console.log(err);
+          navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
+    };
+
+    handleMount();
+  }, [currentUser, navigate, id]);
+
+  const handleChange = (event) => {
+    setUsernameData({
+      ...usernameData,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axiosRes.put("/dj-rest-auth/user/", {
-        username,
-      });
-      setCurrentUser((prevUser) => ({
-        ...prevUser,
-        username,
+      await axiosReq.put(`/profiles/${id}/`, usernameData);
+      setCurrentUser((currentUser) => ({
+        ...currentUser,
+        username: username,
       }));
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       console.log(err);
       setErrors(err.response?.data);
     }
   };
 
-  return (
-    <Row className={styles.Row}>
-      <Col
-        className='my-auto p-0 p-md-2'>
-        <Container className={appStyles.Content}>
-          <Form
-            onSubmit={handleSubmit}
-            className='my-2'>
-            <Form.Group>
-              <Form.Label
-                className={`${styles.Header} w-100`}
-              >Change username</Form.Label>
-              <Form.Control
-                placeholder='username'
-                type='text'
-                value={username}
-                className={styles.Input}
-                onChange={(event) => setUsername(event.target.value)}
-              />
-            </Form.Group>
-            {errors?.username?.map((message, idx) => (
-              <Alert
-                key={idx}
-                variant='warning'>
-                {message}
-              </Alert>
-            ))}
-            <Button
-              className={`${btnStyles.Button} ${btnStyles.Green} ${btnStyles.FullWidth}`}
-              onClick={() => history.goBack()}>
-              cancel
-            </Button>
-            <Button
-              className={`${btnStyles.Button} ${btnStyles.Green} ${btnStyles.FullWidth}`}
-              type='submit'>
-              save
-            </Button>
-          </Form>
-        </Container>
-      </Col>
-    </Row>
+  const textFields = (
+    <>
+      <Form.Group>
+        <Form.Label>Username</Form.Label>
+        <Form.Control
+          type='text'
+          value={username}
+          onChange={handleChange}
+          name='username'
+        />
+      </Form.Group>
+      {errors?.username?.map((message, idx) => (
+        <Alert
+          variant='warning'
+          key={idx}>
+          {message}
+        </Alert>
+      ))}
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        onClick={() => navigate(-1)}>
+        cancel
+      </Button>
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        type='submit'>
+        save
+      </Button>
+    </>
   );
-};
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col
+          className='py-2 p-0 p-md-2 text-center'
+          md={7}
+          lg={6}>
+          <Container className={appStyles.Content}>
+            <Form.Group>
+              {currentUser?.profile_image && (
+                <>
+                  <figure>
+                    <Image
+                      src={currentUser.profile_image}
+                      fluid
+                    />
+                  </figure>
+                </>
+              )}
+            </Form.Group>
+            <div className='d-md-none'>{textFields}</div>
+          </Container>
+        </Col>
+        <Col
+          md={5}
+          lg={6}
+          className='d-none d-md-block p-0 p-md-2'>
+          <Container className={appStyles.Content}>{textFields}</Container>
+        </Col>
+      </Row>
+    </Form>
+  );
+}
 
 export default UsernameForm;

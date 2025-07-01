@@ -1,120 +1,133 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Row, Col, Container, Alert } from 'react-bootstrap';
+import { axiosReq } from '../../api/axiosDefaults';
+import styles from '../../styles/ProfileEditForm.module.css';
+import appStyles from '../../App.module.css';
+import btnStyles from '../../styles/Button.module.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 
-import Alert from "react-bootstrap/Alert";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
+function UserPasswordForm() {
+  const [errors, setErrors] = useState({});
+  const [passwordData, setPasswordData] = useState({
+    new_password1: '',
+    new_password2: '',
+  });
+  const { new_password1, new_password2 } = passwordData;
 
-import { useHistory, useParams } from "react-router-dom";
-import { axiosRes } from "../../api/axiosDefaults";
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
-
-import btnStyles from "../../styles/Button.module.css";
-import appStyles from "../../App.module.css";
-import styles from "../../styles/SignInUpForm.module.css";
-
-const UserPasswordForm = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
   const currentUser = useCurrentUser();
 
-  const [userData, setUserData] = useState({
-    new_password1: "",
-    new_password2: "",
-  });
-  const { new_password1, new_password2 } = userData;
+  useEffect(() => {
+    const handleMount = async () => {
+      if (currentUser?.profile_id?.toString() !== id) {
+        navigate('/');
+      }
+    };
 
-  const [errors, setErrors] = useState({});
+    handleMount();
+  }, [currentUser, navigate, id]);
 
   const handleChange = (event) => {
-    setUserData({
-      ...userData,
+    setPasswordData({
+      ...passwordData,
       [event.target.name]: event.target.value,
     });
   };
 
-  useEffect(() => {
-    if (currentUser?.profile_id?.toString() !== id) {
-      // redirect user if they are not the owner of this profile
-      history.push("/");
-    }
-  }, [currentUser, history, id]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axiosRes.post("/dj-rest-auth/password/change/", userData);
-      history.goBack();
+      await axiosReq.post('/dj-rest-auth/password/change/', passwordData);
+      navigate(-1);
     } catch (err) {
       console.log(err);
       setErrors(err.response?.data);
     }
   };
 
-  return (
-    <Row className={styles.Row}>
-      <Col className='my-auto p-0 p-md-2'>
-        <Container className={appStyles.Content}>
-          <Form
-            onSubmit={handleSubmit}
-            className='my-2'>
-            <Form.Group>
-              <Form.Label className={`${styles.Header} w-100`}>
-                New password
-              </Form.Label>
-              <Form.Control
-                placeholder='new password'
-                type='password'
-                value={new_password1}
-                className={styles.Input}
-                onChange={handleChange}
-                name='new_password1'
-              />
-            </Form.Group>
-            {errors?.new_password1?.map((message, idx) => (
-              <Alert
-                key={idx}
-                variant='warning'>
-                {message}
-              </Alert>
-            ))}
-            <Form.Group>
-              <Form.Label className={`${styles.Header} w-100`}>
-                Confirm password
-              </Form.Label>
-              <Form.Control
-                placeholder='confirm new password'
-                type='password'
-                value={new_password2}
-                className={styles.Input}
-                onChange={handleChange}
-                name='new_password2'
-              />
-            </Form.Group>
-            {errors?.new_password2?.map((message, idx) => (
-              <Alert
-                key={idx}
-                variant='warning'>
-                {message}
-              </Alert>
-            ))}
-            <Button
-              className={`${btnStyles.Button} ${btnStyles.Green} ${btnStyles.FullWidth}`}
-              onClick={() => history.goBack()}>
-              cancel
-            </Button>
-            <Button
-              type='submit'
-              className={`${btnStyles.Button} ${btnStyles.Green} ${btnStyles.FullWidth}`}>
-              save
-            </Button>
-          </Form>
-        </Container>
-      </Col>
-    </Row>
+  const textFields = (
+    <>
+      <Form.Group>
+        <Form.Label>New Password</Form.Label>
+        <Form.Control
+          type='password'
+          value={new_password1}
+          onChange={handleChange}
+          name='new_password1'
+        />
+      </Form.Group>
+      {errors?.new_password1?.map((message, idx) => (
+        <Alert
+          variant='warning'
+          key={idx}>
+          {message}
+        </Alert>
+      ))}
+
+      <Form.Group>
+        <Form.Label>Confirm New Password</Form.Label>
+        <Form.Control
+          type='password'
+          value={new_password2}
+          onChange={handleChange}
+          name='new_password2'
+        />
+      </Form.Group>
+      {errors?.new_password2?.map((message, idx) => (
+        <Alert
+          variant='warning'
+          key={idx}>
+          {message}
+        </Alert>
+      ))}
+
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        onClick={() => navigate(-1)}>
+        cancel
+      </Button>
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        type='submit'>
+        save
+      </Button>
+    </>
   );
-};
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col
+          className='py-2 p-0 p-md-2 text-center'
+          md={7}
+          lg={6}>
+          <Container className={appStyles.Content}>
+            <Form.Group>
+              {currentUser?.profile_image && (
+                <>
+                  <figure>
+                    <img
+                      src={currentUser.profile_image}
+                      alt='Profile'
+                    />
+                  </figure>
+                </>
+              )}
+            </Form.Group>
+            <div className='d-md-none'>{textFields}</div>
+          </Container>
+        </Col>
+        <Col
+          md={5}
+          lg={6}
+          className='d-none d-md-block p-0 p-md-2'>
+          <Container className={appStyles.Content}>{textFields}</Container>
+        </Col>
+      </Row>
+    </Form>
+  );
+}
 
 export default UserPasswordForm;

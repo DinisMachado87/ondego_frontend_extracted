@@ -70,9 +70,9 @@ const NavBar = () => {
             onClick={() => handleSelect(choice)}
             className={styles.DropdownItem}>
             <NavLink
-              exact
-              className={styles.NavLink}
-              activeClassName={styles.Active}
+              className={({ isActive }) =>
+                `${styles.NavLink} ${isActive ? styles.Active : ''}`
+              }
               to={choice.to}>
               <i className={choice.icon}></i> {choice.description}
             </NavLink>
@@ -87,9 +87,9 @@ const NavBar = () => {
       {choices.map((choice, index) => (
         <NavLink
           key={index}
-          exact
-          className={styles.NavLink}
-          activeClassName={styles.Active}
+          className={({ isActive }) =>
+            `${styles.NavLink} ${isActive ? styles.Active : ''}`
+          }
           to={choice.to}>
           <i className={choice.icon}></i> {choice.description}
         </NavLink>
@@ -100,8 +100,9 @@ const NavBar = () => {
   const loggedInIcons = (
     <>
       <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
+        className={({ isActive }) =>
+          `${styles.NavLink} ${isActive ? styles.Active : ''}`
+        }
         to='/event/create'>
         <i className='fa-solid fa-wand-magic-sparkles'></i>add evënt
       </NavLink>
@@ -113,8 +114,9 @@ const NavBar = () => {
         <i className='fa-solid fa-lightbulb'></i> Sign out
       </NavLink>
       <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
+        className={({ isActive }) =>
+          `${styles.NavLink} ${isActive ? styles.Active : ''}`
+        }
         to={`/latestfriendslogin/${currentUser?.profile_id}`}>
         <i className='fa-solid fa-user'></i> friends and users
       </NavLink>
@@ -134,15 +136,17 @@ const NavBar = () => {
   const loggedOutIcons = (
     <>
       <NavLink
-        className={styles.NavLink}
-        activeClassName={styles.Active}
+        className={({ isActive }) =>
+          `${styles.NavLink} ${isActive ? styles.Active : ''}`
+        }
         to='/signin'>
         <i className='fa-solid fa-plug'></i>Sign in
       </NavLink>
       <NavLink
         to='/signup'
-        className={styles.NavLink}
-        activeClassName={styles.Active}>
+        className={({ isActive }) =>
+          `${styles.NavLink} ${isActive ? styles.Active : ''}`
+        }>
         <i className='fa-solid fa-user-astronaut'></i>register
       </NavLink>
     </>
@@ -177,8 +181,9 @@ const NavBar = () => {
           <Nav className={`ml-auto ${expanded ? styles.expanded : ''}`}>
             {currentUser ? loggedInIcons : loggedOutIcons}
             <NavLink
-              className={styles.NavLink}
-              activeClassName={styles.Active}
+              className={({ isActive }) =>
+                `${styles.NavLink} ${isActive ? styles.Active : ''}`
+              }
               to='/instructions'>
               <i className='fa-solid fa-book'></i>Instructions
             </NavLink>

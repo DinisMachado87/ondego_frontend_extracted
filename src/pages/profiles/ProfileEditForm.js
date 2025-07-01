@@ -1,57 +1,57 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Form, Button, Row, Col, Alert, Container } from "react-bootstrap";
-import { useHistory } from "react-router";
-import btnStyles from "../../styles/Button.module.css";
-import styles from "../../styles/ProfileEditForm.module.css";
-import { axiosReq } from "../../api/axiosDefaults";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Asset from '../../components/Asset';
+import styles from '../../styles/ProfileEditForm.module.css';
+import btnStyles from '../../styles/Button.module.css';
+import appStyles from '../../App.module.css';
 import {
   useCurrentUser,
   useSetCurrentUser,
-} from "../../contexts/CurrentUserContext";
+} from '../../contexts/CurrentUserContext';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useParams } from 'react-router-dom';
 
 const ProfileEditForm = () => {
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
   const { id } = useParams();
-  const history = useHistory();
-  const [success, setSuccess] = useState("");
-
-  const imageFile = useRef();
-
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
-    name: "",
-    feeling: "",
-    would_like_to: "",
-    image: "",
+    name: '',
+    content: '',
+    image: '',
   });
+  const { name, content, image } = profileData;
 
-  const { name, feeling, would_like_to } = profileData;
-
+  const [imageFile, setImageFile] = useState(null);
   const [errors, setErrors] = useState({});
+  const fileInput = useRef();
 
-  /** Fetch the profile data of the current user and set the profileData state
-   */
   useEffect(() => {
     const handleMount = async () => {
       if (currentUser?.profile_id?.toString() === id) {
         try {
           const { data } = await axiosReq.get(`/profiles/${id}/`);
-          const {
-            name = data.name || "",
-            feeling = data.feeling || "",
-            would_like_to = data.would_like_to || "",
-            image = data.image || "",
-          } = data;
-          setProfileData({ name, feeling, would_like_to, image });
+          const { name, content, image } = data;
+          setProfileData({ name, content, image });
         } catch (err) {
           console.log(err);
+          navigate('/');
         }
+      } else {
+        navigate('/');
       }
     };
 
     handleMount();
-  }, [currentUser, id, history]);
+  }, [currentUser, navigate, id]);
 
   const handleChange = (event) => {
     setProfileData({
@@ -60,209 +60,122 @@ const ProfileEditForm = () => {
     });
   };
 
+  const handleChangeImage = (event) => {
+    if (event.target.files.length) {
+      URL.revokeObjectURL(imageFile);
+      setImageFile(URL.createObjectURL(event.target.files[0]));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        image: '',
+      }));
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("name", name);
-    formData.append("feeling", feeling);
-    formData.append("would_like_to", would_like_to);
 
-    if (imageFile?.current?.files[0]) {
-      formData.append("image", imageFile?.current?.files[0]);
+    formData.append('name', name);
+    formData.append('content', content);
+
+    if (imageFile?.name) {
+      formData.append('image', imageFile);
     }
 
     try {
       const { data } = await axiosReq.put(`/profiles/${id}/`, formData);
       setCurrentUser((currentUser) => ({
         ...currentUser,
-        image: data.image,
+        profile_image: data.image,
       }));
-      // update the state with the new profile data
-      setProfileData(data);
-      // Set the success message
-      setSuccess("Profile updated successfully!");
-      // Clear any previous errors
-      setErrors({});
+      navigate(-1);
     } catch (err) {
       console.log(err);
       setErrors(err.response?.data);
-      // Clear the success message
-      setSuccess("");
     }
   };
 
+  const textFields = (
+    <>
+      <Form.Group>
+        <Form.Label>Bio</Form.Label>
+        <Form.Control
+          as='textarea'
+          value={content}
+          onChange={handleChange}
+          name='content'
+          rows={7}
+        />
+      </Form.Group>
+
+      {errors?.content?.map((message, idx) => (
+        <Alert
+          variant='warning'
+          key={idx}>
+          {message}
+        </Alert>
+      ))}
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        onClick={() => navigate(-1)}>
+        cancel
+      </Button>
+      <Button
+        className={`${btnStyles.Button} ${btnStyles.Blue}`}
+        type='submit'>
+        save
+      </Button>
+    </>
+  );
+
   return (
-    <Container className={`${styles.Container}`}>
-      <Form
-        onSubmit={handleSubmit}
-        className={`${styles.Form} px-3`}>
-        <Row>
-          <Col className='my-2 mx-auto'>
+    <Form onSubmit={handleSubmit}>
+      <Row>
+        <Col
+          className='py-2 p-0 p-md-2 text-center'
+          md={7}
+          lg={6}>
+          <Container className={appStyles.Content}>
             <Form.Group>
-              <Row
-                className={`d-flex justify-content-center`}>
-                <Col className='d-flex justify-content-center align-items-center'>
-                  <img
-                    className={styles.Image}
-                    src={profileData.image}
-                    alt='profile'
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Form.Label
-                  className={`${btnStyles.Button} ${btnStyles.Orange} mx-auto`}
-                  htmlFor='image'>
-                  Change profile image
-                  <Form.File
-                    hidden
-                    id='image'
-                    accept='image/*'
-                    type='file'
-                    ref={imageFile}
-                    onChange={(e) => {
-                      if (e.target.files.length) {
-                        setProfileData({
-                          ...profileData,
-                          image: URL.createObjectURL(e.target.files[0]),
-                        });
-                      } else {
-                        setProfileData({
-                          ...profileData,
-                          image: profileData.image,
-                        });
-                      }
-                    }}
-                  />
-                </Form.Label>
-              </Row>
-              <Row>
-                {errors?.image?.map((message, idx) => (
-                  <Alert
-                    key={idx}
-                    variant='Warning'>
-                    {message}
-                  </Alert>
-                ))}
-              </Row>
+              {image ? (
+                <>
+                  <figure>
+                    <Image
+                      src={image}
+                      fluid
+                    />
+                  </figure>
+                </>
+              ) : (
+                <Asset message='Click or tap to upload an image' />
+              )}
             </Form.Group>
-          </Col>
-        </Row>
+            <div>
+              <Form.Label
+                className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
+                htmlFor='image-upload'>
+                Change the image
+              </Form.Label>
+            </div>
 
-        <Row className='justify-content-center no-gutters'>
-          <Col className='my-2 col-12'>
-            <Row className='my-2'>
-              <Col xs={12}>
-                <Row className={styles.Input}>
-                  <Col xs={3}>
-                    <Form.Label
-                      className={`${styles.Label} ${styles.Header} p-2`}>
-                      Name
-                    </Form.Label>
-                  </Col>
-                  <Col xs={9}>
-                    <Form.Control
-                      type='text'
-                      value={name}
-                      onChange={handleChange}
-                      name='name'
-                      className={`${styles.Input} m-1`}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row className='my-2'>
-              <Col xs={12}>
-                <Row className={styles.Input}>
-                  <Col xs={3}>
-                    <Form.Label
-                      className={`${styles.Label} ${styles.Header} p-2`}>
-                      Feeling
-                    </Form.Label>
-                  </Col>
-                  <Col xs={9}>
-                    <Form.Control
-                      type='text'
-                      value={feeling}
-                      onChange={handleChange}
-                      name='feeling'
-                      className={`${styles.Input} m-1`}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row className='my-2'>
-              <Col xs={12}>
-                <Row className={styles.Input}>
-                  <Col xs={3}>
-                    <Form.Label
-                      className={`${styles.Label} ${styles.Header} p-2`}>
-                      Would Like To
-                    </Form.Label>
-                  </Col>
-                  <Col xs={9}>
-                    <Form.Control
-                      type='text'
-                      value={would_like_to}
-                      onChange={handleChange}
-                      name='would_like_to'
-                      className={`${styles.Input} m-1`}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row className='my-2'>
-              <Col xs={12}>
-                <Row className={styles.Input}>
-                  <Col>
-                    {success && (
-                      <Alert
-                        className={`${styles.Label} m-3`}
-                        variant='success'>
-                        {success}
-                      </Alert>
-                    )}
-                    {errors &&
-                      Object.keys(errors).map((key) => (
-                        <Alert
-                          className={`${styles.Label} m-3`}
-                          variant='danger'>
-                          {errors[key]}
-                        </Alert>
-                      ))}
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col>
-                <Row>
-                  <Col className='text-center'>
-                    <Button
-                      className={`${btnStyles.Button} ${btnStyles.Orange}`}
-                      onClick={() => history.goBack()}>
-                      Cancel
-                    </Button>
-                    <Button
-                      className={`${btnStyles.Button} ${btnStyles.Orange}`}
-                      type='submit'>
-                      Save
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Form>
-    </Container>
+            <Form.File
+              id='image-upload'
+              ref={fileInput}
+              accept='image/*'
+              onChange={handleChangeImage}
+              className='d-none'
+            />
+            <div className='d-md-none'>{textFields}</div>
+          </Container>
+        </Col>
+        <Col
+          md={5}
+          lg={6}
+          className='d-none d-md-block p-0 p-md-2'>
+          <Container className={appStyles.Content}>{textFields}</Container>
+        </Col>
+      </Row>
+    </Form>
   );
 };
 

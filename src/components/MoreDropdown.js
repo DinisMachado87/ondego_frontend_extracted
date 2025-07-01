@@ -1,10 +1,10 @@
-import React from "react";
-import Dropdown from "react-bootstrap/Dropdown";
-import styles from "../styles/MoreDropdown.module.css";
-import { useHistory } from "react-router";
-import btnStyles from "../styles/Button.module.css";
+import React from 'react';
+import { Dropdown } from 'react-bootstrap';
+import styles from '../styles/MoreDropdown.module.css';
+import { useNavigate } from 'react-router';
+import btnStyles from '../styles/Button.module.css';
 
-
+// The forwardRef is necessary since the dropdown needs access to the DOM node of the Menu to align itself
 const ThreeDots = React.forwardRef(({ onClick }, ref) => (
   <i
     className='fas fa-ellipsis-v'
@@ -16,31 +16,31 @@ const ThreeDots = React.forwardRef(({ onClick }, ref) => (
   />
 ));
 
+ThreeDots.displayName = 'ThreeDots';
+
 export const MoreDropdown = ({ handleEdit, handleDelete }) => {
+  const navigate = useNavigate();
+
   return (
     <Dropdown
-      className='ml-auto '
+      className='ml-auto'
       drop='left'>
       <Dropdown.Toggle as={ThreeDots} />
+
       <Dropdown.Menu
-        className={`${styles.Backcolor} text-center`}
-        popperConfig={{ strategy: "fixed" }}>
+        className='text-center'
+        popperConfig={{ strategy: 'fixed' }}>
         <Dropdown.Item
           className={styles.DropdownItem}
           onClick={handleEdit}
           aria-label='edit'>
-          <span>
-            <i className='fas fa-edit' />
-          </span>
+          <i className='fas fa-edit' />
         </Dropdown.Item>
         <Dropdown.Item
           className={styles.DropdownItem}
           onClick={handleDelete}
           aria-label='delete'>
-          <span>
-            {" "}
-            <i className='fas fa-trash-alt' />
-          </span>
+          <i className='fas fa-trash-alt' />
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
@@ -61,7 +61,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 ));
 
 export function ProfileEditDropdown({ id }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <Dropdown
       className={`ml-auto px-3`}
@@ -72,19 +72,19 @@ export function ProfileEditDropdown({ id }) {
       <Dropdown.Menu className={`${styles.Backcolor} text-center p-3`}>
         <Dropdown.Item
           className={`${styles.DropdownItem} d-block`}
-          onClick={() => history.push(`/profiles/${id}/edit/username`)}
+          onClick={() => navigate(`/profiles/${id}/edit/username`)}
           aria-label='edit-username'>
           <span>
-            {" "}
+            {' '}
             <i className='far fa-id-card' /> change username
           </span>
         </Dropdown.Item>
         <Dropdown.Item
           className={`${styles.DropdownItem} d-block`}
-          onClick={() => history.push(`/profiles/${id}/edit/password`)}
+          onClick={() => navigate(`/profiles/${id}/edit/password`)}
           aria-label='edit-password'>
           <span>
-            {" "}
+            {' '}
             <i className='fas fa-key' /> change password
           </span>
         </Dropdown.Item>

@@ -9,13 +9,15 @@ import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import Container from 'react-bootstrap/Container';
 
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import styles from '../../styles/SignInUpForm.module.css';
 import btnStyles from '../../styles/Button.module.css';
 import appStyles from '../../App.module.css';
 import { useSetCurrentUser } from '../../contexts/CurrentUserContext';
 import { useRedirect } from '../../hooks/useRedirect';
+import { setTokens, setAuthHeader } from '../../utils/jwtUtils';
+import { axiosReq } from '../../api/axiosDefaults';
 
 function SignInForm() {
   const setCurrentUser = useSetCurrentUser();
@@ -27,14 +29,23 @@ function SignInForm() {
   });
   const { username, password } = signInData;
   const [errors, setErrors] = useState({});
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const { data } = await axios.post('/dj-rest-auth/login/', signInData);
-      setCurrentUser(data.user);
-      history.push('/');
+      // Get JWT tokens
+      const { data: tokenData } = await axios.post('token/', signInData);
+      const { access, refresh } = tokenData;
+
+      // Store tokens
+      setTokens(access, refresh);
+      setAuthHeader(axiosReq);
+
+      // Get user data
+      const { data: userData } = await axiosReq.get('dj-rest-auth/user/');
+      setCurrentUser(userData);
+      navigate('/');
     } catch (err) {
       setErrors(err.response?.data);
     }
@@ -50,12 +61,18 @@ function SignInForm() {
   const handleTestUserLogin = async (event) => {
     event.preventDefault();
     try {
-      const { data } = await axios.post('/dj-rest-auth/login/', {
+      const { data: tokenData } = await axios.post('token/', {
         username: process.env.REACT_APP_TEST_USERNAME,
         password: process.env.REACT_APP_TEST_PASSWORD,
       });
-      setCurrentUser(data.user);
-      history.push('/');
+
+      const { access, refresh } = tokenData;
+      setTokens(access, refresh);
+      setAuthHeader(axiosReq);
+
+      const { data: userData } = await axiosReq.get('dj-rest-auth/user/');
+      setCurrentUser(userData);
+      navigate('/');
     } catch (err) {
       setErrors(err.message);
     }

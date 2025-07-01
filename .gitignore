@@ -9,5 +9,5 @@ node_modules/
 cloudinary_python.txt
 env.py
 .env
-.env.local
+.env.development
 .DS_Store

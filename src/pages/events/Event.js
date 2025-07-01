@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // React
 import { axiosReq, axiosRes } from '../../api/axiosDefaults';
 // Axios
-import { Card, Col, Media, Row } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 import styles from '../../styles/Event.module.css';
 import appStyles from '../../App.module.css';
 // styles
@@ -38,14 +38,14 @@ const Event = (props) => {
 
   const currentUser = useCurrentUser();
   const is_owner = currentUser?.username === owner;
-  const history = useHistory();
+  const navigate = useNavigate();
   const [currentPreviousUserChoice, setCurrentPreviousUserChoice] =
     useState(joining_status);
   /** stores the previous user joining status choice
    *  and updates in State every time the user changes their choice
    */
   const handleEdit = () => {
-    history.push(`/event/${id}/edit`);
+    navigate(`/event/${id}/edit`);
   };
 
   const handleDelete = async () => {
@@ -56,7 +56,7 @@ const Event = (props) => {
           ...prevEvents,
           results: prevEvents.results.filter((event) => event.id !== id),
         }));
-        history.push('/');
+        navigate('/');
       } catch (err) {
         console.log(err);
       }
@@ -158,9 +158,9 @@ const Event = (props) => {
     <Card
       style={{ backgroundImage: `url(${event_image})` }}
       className={`${styles.StretchedImage} ${styles.YMargin}`}>
-      <Media className={`${styles.Event}`}>
+      <Card className={`${styles.Event}`}>
         <Card.Body
-          onClick={() => history.push(`/events/${id}`)}
+          onClick={() => navigate(`/events/${id}`)}
           className={`${styles.TextShadow} ${appStyles.Pointer} d-flex justify-content-between align-items-start`}>
           <div className={`${styles.Container} ${styles.EventBody}`}>
             <div className={`${styles.flexStart}`}>
@@ -189,7 +189,7 @@ const Event = (props) => {
             <p>{what_content && <span>{what_content}</span>}</p>
             <br />
             <p>
-              {where_place && <span>{ where_place }</span> }
+              {where_place && <span>{where_place}</span>}
               <br />
               {where_address && <span>{where_address}</span>}
             </p>
@@ -245,7 +245,7 @@ const Event = (props) => {
             </Row>
           </div>
         </Card.Footer>
-      </Media>
+      </Card>
     </Card>
   );
 };

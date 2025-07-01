@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import styles from "../../styles/Comment.module.css";
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import React, { useState } from 'react';
+import styles from '../../styles/Comment.module.css';
+import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
-import { Col, Media, Row } from 'react-bootstrap';
+import { Col, Card, Row } from 'react-bootstrap';
 import { MoreDropdown } from '../../components/MoreDropdown';
-import CommentEditForm from "./CommentEditForm";
+import CommentEditForm from './CommentEditForm';
 import { axiosReq } from '../../api/axiosDefaults';
-import { useCurrentUser } from "../../contexts/CurrentUserContext";
-
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 
 const Comment = (props) => {
   const {
@@ -20,11 +19,11 @@ const Comment = (props) => {
     setComments,
     setEvent,
   } = props;
-  
-    const [showEditForm, setShowEditForm] = useState(false);
-    const currentUser = useCurrentUser();
-    const is_owner = currentUser?.username === owner;
-  
+
+  const [showEditForm, setShowEditForm] = useState(false);
+  const currentUser = useCurrentUser();
+  const is_owner = currentUser?.username === owner;
+
   const handleDelete = () => {
     try {
       axiosReq.delete(`/comments/${id}/`);
@@ -45,11 +44,10 @@ const Comment = (props) => {
     }
   };
 
-
   return (
     <div>
-      <Media className={styles.Comment}>
-        <Media.Body className='m-1'>
+      <Card className={styles.Comment}>
+        <Card.Body className='m-1'>
           {is_owner ? (
             <Row className='p-1'>
               <Col className='col-1'>
@@ -77,9 +75,9 @@ const Comment = (props) => {
                   <p className='mt-1'>
                     {owner}: {message}
                     <span className={styles.UpdatedAt}>
-                      {"  "}
+                      {'  '}
                       {updated_at}
-                    </span>{" "}
+                    </span>{' '}
                   </p>
                 </Col>
               )}
@@ -89,7 +87,7 @@ const Comment = (props) => {
               <Col className='col-9 p-2 d-flex justify-content-end'>
                 <p className='text-right mt-1'>
                   <span className={styles.UpdatedAt}>{updated_at}</span>
-                  {"  "}
+                  {'  '}
                   {message}
                 </p>
               </Col>
@@ -102,10 +100,10 @@ const Comment = (props) => {
               </Col>
             </Row>
           )}
-        </Media.Body>
-      </Media>
+        </Card.Body>
+      </Card>
     </div>
   );
-}
+};
 
-export default Comment
+export default Comment;

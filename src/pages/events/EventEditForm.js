@@ -1,24 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Image from "react-bootstrap/Image";
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
 
-import Upload from "../../assets/upload.jpg";
+import Upload from '../../assets/upload.jpg';
 
-import styles from "../../styles/EventCreateEditForm.module.css";
-import appStyles from "../../App.module.css";
-import btnStyles from "../../styles/Button.module.css";
-import { Alert } from "react-bootstrap";
-import {
-  useHistory,
-  useParams,
-} from "react-router-dom/cjs/react-router-dom.min";
-import { axiosReq } from "../../api/axiosDefaults";
+import styles from '../../styles/EventCreateEditForm.module.css';
+import appStyles from '../../App.module.css';
+import btnStyles from '../../styles/Button.module.css';
+import { Alert } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from '../../contexts/CurrentUserContext';
 
 function EventEditForm() {
   const formatDate = (dateString) => {
@@ -35,16 +33,16 @@ function EventEditForm() {
   const [errors, setErrors] = useState({});
 
   const [eventData, setEventData] = useState({
-    id: "",
-    what_title: "",
-    what_content: "",
-    where_place: "",
-    where_address: "",
-    when_start: "",
-    when_end: "",
-    intention: "",
+    id: '',
+    what_title: '',
+    what_content: '',
+    where_place: '',
+    where_address: '',
+    when_start: '',
+    when_end: '',
+    intention: '',
     event_image: Upload,
-    link: "",
+    link: '',
   });
 
   const {
@@ -63,8 +61,9 @@ function EventEditForm() {
   const [endInputValue, setEndInputValue] = useState(when_end);
 
   const imageInput = useRef(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     const handleMount = async () => {
@@ -85,30 +84,31 @@ function EventEditForm() {
         if (is_owner) {
           console.log('User is owner, setting form data');
           setEventData({
-            what_title: what_title || "",
-            what_content: what_content || "",
-            where_place: where_place || "",
-            where_address: where_address || "",
+            what_title: what_title || '',
+            what_content: what_content || '',
+            where_place: where_place || '',
+            where_address: where_address || '',
             when_start: formatDate(when_start),
             when_end: formatDate(when_end),
-            intention: intention || "",
+            intention: intention || '',
             event_image: event_image || Upload,
-            link: link || "",
+            link: link || '',
           });
           setStartInputValue(formatDate(when_start));
           setEndInputValue(formatDate(when_end));
         } else {
           console.log('User is NOT owner, redirecting to event page');
-          history.push(`/events/${id}`);
+          navigate(`/events/${id}`);
         }
       } catch (err) {
         console.error(err);
         console.error('Error response:', err.response);
+        navigate('/');
       }
     };
 
     handleMount();
-  }, [history, id]);
+  }, [navigate, id]);
 
   const calculateNewEndDate = (startDate) => {
     const start = new Date(startDate);
@@ -118,9 +118,9 @@ function EventEditForm() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "when_start") {
+    if (name === 'when_start') {
       setStartInputValue(value);
-    } else if (name === "when_end") {
+    } else if (name === 'when_end') {
       setEndInputValue(value);
     } else {
       setEventData((prevData) => ({
@@ -130,20 +130,20 @@ function EventEditForm() {
     }
   };
 
-const resizeImage = (file, callback) => {
-  Resizer.imageFileResizer(
-    file,
-    1920, // Max width
-    1080, // Max height
-    'JPEG', // Format
-    85, // Quality
-    0, // Rotation
-    (resizedImage) => {
-      callback(resizedImage);
-    },
-    'file'
-  );
-};
+  const resizeImage = (file, callback) => {
+    Resizer.imageFileResizer(
+      file,
+      1920, // Max width
+      1080, // Max height
+      'JPEG', // Format
+      85, // Quality
+      0, // Rotation
+      (resizedImage) => {
+        callback(resizedImage);
+      },
+      'file'
+    );
+  };
 
   const handleChangeImage = (event) => {
     // if there is a file, set the image to the file
@@ -198,7 +198,7 @@ const resizeImage = (file, callback) => {
         formData.append('event_image', resizedImage);
         try {
           await axiosReq.put(`/events/${id}/`, formData);
-          history.push(`/events/${id}/`);
+          navigate(`/events/${id}/`);
         } catch (err) {
           console.error(err);
           if (err.response?.status !== 401) {
@@ -210,7 +210,7 @@ const resizeImage = (file, callback) => {
       // No image selected, submit without image
       try {
         await axiosReq.put(`/events/${id}/`, formData);
-        history.push(`/events/${id}/`);
+        navigate(`/events/${id}/`);
       } catch (err) {
         console.error(err);
         if (err.response?.status !== 401) {
@@ -389,7 +389,7 @@ const resizeImage = (file, callback) => {
 
       <Button
         className={`${btnStyles.Button} ${btnStyles.Orange}`}
-        onClick={() => history.goBack()}>
+        onClick={() => navigate(-1)}>
         cancel
       </Button>
       <Button
@@ -430,7 +430,7 @@ const resizeImage = (file, callback) => {
               <Form.Label
                 className={`${btnStyles.Button} ${btnStyles.Orange}`}
                 htmlFor='image-upload'>
-                {event_image ? "Change the image" : "Click to add an image"}
+                {event_image ? 'Change the image' : 'Click to add an image'}
                 <i className='fa-solid fa-cloud-arrow-up'></i>
                 <Form.File
                   id='image-upload'

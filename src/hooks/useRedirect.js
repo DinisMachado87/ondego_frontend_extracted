@@ -1,25 +1,31 @@
-import axios from "axios";
-import { useEffect } from "react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAccessToken, isTokenExpired } from '../utils/jwtUtils';
 
 export const useRedirect = (userAuthStatus) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleMount = async () => {
       try {
-        await axios.post('/dj-rest-auth/token/refresh/')
-        if (userAuthStatus === "loggedIn") {
-          history.push("/");
+        const token = getAccessToken();
+        if (!token || isTokenExpired(token)) {
+          if (userAuthStatus === 'loggedIn') {
+            navigate('/signin');
+          }
+        } else {
+          if (userAuthStatus === 'loggedIn') {
+            navigate('/');
+          }
         }
       } catch (err) {
         // Redirects to the login page if the user is not authenticated
-        if (err.response.status === "loggedOut") {
-          history.push("/signin");
+        if (userAuthStatus === 'loggedIn') {
+          navigate('/signin');
         }
       }
     };
 
     handleMount();
-  }, [userAuthStatus, history]);
+  }, [userAuthStatus, navigate]);
 };
